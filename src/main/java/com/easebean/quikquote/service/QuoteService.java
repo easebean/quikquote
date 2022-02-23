@@ -2,11 +2,14 @@ package com.easebean.quikquote.service;
 
 import com.easebean.quikquote.model.Quote;
 import com.easebean.quikquote.repository.QuoteRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class QuoteService {
@@ -21,7 +24,7 @@ public class QuoteService {
     }
 
     public List<Quote> allQuotes() {
-        return quoteRepository.findAll();
+        return (List<Quote>) quoteRepository.findAll();
     }
 
    public Quote findQuoteById(Long id)
@@ -37,6 +40,11 @@ public class QuoteService {
     public List<Quote> findQuoteByCategory(String category)
     {
         return quoteRepository.findQuoteByCategory(category);
+    }
+
+    public List<Quote> getQuotes(Pageable page){
+        Page<Quote> response = quoteRepository.findAll(page);
+        return response.get().collect(Collectors.toList());
     }
 
     @Transactional
